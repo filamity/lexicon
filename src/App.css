@@ -1,0 +1,82 @@
+@font-face {
+    font-family: "Inter";
+    src: url("./assets/fonts/Inter-Regular.ttf") format('truetype');
+}
+@font-face {
+    font-family: "Inter";
+    src: url("./assets/fonts/Inter-ExtraBold.ttf") format('truetype');
+    font-weight: bold;
+}
+
+* {
+    font-family: "Inter";
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.top-header {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+.content-wrap {
+    height: 100vh;
+    width: 100%;
+    background-color: #ECECEC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+#vocab-range {
+    font-size: 16px;
+}
+
+.outer-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+}
+
+.question-card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0.5rem;
+    background-color: #FEFEFE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    position: relative;
+}
+
+.sidebar {
+    background-color: #FEFEFE;
+    margin-left: 10px;
+    border-radius: 0.5rem;
+    height: 300px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.current-count {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+.display-text {
+    font-weight: bolder;
+    font-size: 30px;
+    padding: 0 0 20px;
+}
