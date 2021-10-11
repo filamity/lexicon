@@ -31,18 +31,23 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    flex-direction: column;
-}
-
-#vocab-range {
-    font-size: 16px;
+    flex-direction: row;
 }
 
 .outer-wrap {
     width: 100%;
     display: flex;
-    justify-content: center;
     height: 300px;
+}
+
+@media screen and (max-width: 768px) {
+    .content-wrap {
+        flex-direction: column;
+    }
+}
+
+#vocab-range {
+    font-size: 16px;
 }
 
 .question-card {

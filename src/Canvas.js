@@ -242,7 +242,8 @@ handwriting.recognize = function(trace, options, callback) {
     xhr.send(data);
 };
 
-const Canvas = () => {
+
+const Canvas = ({ setInput }) => {
     const [suggestions, setSuggestions] = useState([])
 
     useEffect(() => {
@@ -282,9 +283,20 @@ const Canvas = () => {
 
                 <div className="suggestions">
                     {suggestions.map((text, i) => (
-                        <span className="suggestion" key={i}>{text}</span>
+                        <span 
+                            className={`suggestion clear-btn`}
+                            id="clear-btn"
+                            key={i}
+                            onClick={() => setInput(prev => prev + text)}
+                        >
+                            {text}
+                        </span>
                     ))}
-                    <span className="suggestion" id="clear-btn">Clear</span>
+                    <span 
+                        className="suggestion" 
+                        id="clear-btn"
+                        onClick={() => setInput("")}
+                    >Clear</span>
                 </div>
             </div>
         </div>

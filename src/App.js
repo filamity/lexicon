@@ -8,12 +8,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import TranslateIcon from '@mui/icons-material/Translate';
 import IconButton from "@mui/material/IconButton"
 import { vocab } from "./vocab"
 import Canvas from "./Canvas"
 
 function App() {
     const [input, setInput] = useState("")
+    const [japanese, setJapanese] = useState(false)
     const [qOrder, setQOrder] = useState(shuffle([...Array(vocab.length).keys()]))
     const [currentIdx, setCurrentIdx] = useState(0)
     const [gameOver, setGameOver] = useState(false)
@@ -82,7 +84,7 @@ function App() {
 
     function download() {
         const element = document.createElement("a")
-        let string = `Word\t\t\tMeaning\n-------------------------------\n`
+        let string = `Word\t\t\tRomaji\t\t\tKana\n----------------------------------------------------\n`
         for (let i = 0; i < list.length; i++) {
             if (vocab[list[i]][1].length < 8) {
                 string += `${vocab[list[i]][1]}\t\t\t${vocab[list[i]][2]}\n`
@@ -127,7 +129,14 @@ function App() {
             </h3>
             <div className="content-wrap">
                 
-                <div className="outer-wrap">
+                <div 
+                    className="outer-wrap" 
+                    style={{
+                        justifyContent: (window.innerWidth <= 768)
+                            ? "center"
+                            : japanese ? "flex-end" : "center"
+                    }}
+                >
                     <div className="question-card">
 
                         {!gameOver &&
@@ -142,7 +151,7 @@ function App() {
                                         }
                                     </div>
                                     <TextField 
-                                        label="Answer in Japanese"
+                                        label={`Answer in Japanese ${japanese ? "(Kana)" : "(Romaji)"}`}
                                         variant="standard"
                                         value={input}
                                         onChange={e => setInput(e.target.value.toLowerCase().replace(/\s/g,''))}
@@ -167,6 +176,28 @@ function App() {
                     </div>
                     <div className="sidebar">
                         <div>
+                            {(!gameOver && japanese) &&
+                                <Tooltip title="Answer in Romaji" placement="right">
+                                    <IconButton
+                                        color="primary" 
+                                        size="large"
+                                        onClick={() => setJapanese(prev => !prev)}
+                                    >
+                                        <TranslateIcon fontSize="inherit" />
+                                    </IconButton>
+                                </Tooltip>
+                            }
+                            {(!gameOver && !japanese) &&
+                                <Tooltip title="Answer in Kana" placement="right">
+                                    <IconButton
+                                        color="primary" 
+                                        size="large"
+                                        onClick={() => setJapanese(prev => !prev)}
+                                    >
+                                        <TranslateIcon fontSize="inherit" />
+                                    </IconButton>
+                                </Tooltip>
+                            }
                             {(!gameOver && show) &&
                                 <Tooltip title="Hide Answer" placement="right">
                                     <IconButton
@@ -224,7 +255,7 @@ function App() {
                     </div>
                 </div>
 
-                <Canvas />
+                {japanese && <Canvas setInput={setInput} />}
 
             </div>
         </div>
