@@ -243,8 +243,16 @@ handwriting.recognize = function(trace, options, callback) {
 };
 
 
-const Canvas = ({ setInput }) => {
+const Canvas = ({ setInput, japanese }) => {
     const [suggestions, setSuggestions] = useState([])
+    const [width, setWidth] = useState(window.innerWidth)
+    const [can, setCan] = useState(null)
+
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    })
 
     useEffect(() => {
         var can1 = new handwriting.Canvas(document.getElementById("can"));
@@ -259,24 +267,42 @@ const Canvas = ({ setInput }) => {
             numOfReturn: 5
         });
 
-        let erase = () => {
-            can1.erase()
-            setSuggestions([])
-        }
-        let clearBtn = document.getElementById("clear-btn")
-        clearBtn.onclick = erase
+        setCan(can1)
     }, [])
 
     return (
         <div id="canvas-wrap">
             <canvas 
                 width={
-                    (window.innerWidth - 20 <= 510) 
-                    ? window.innerWidth - 20 
-                    : 510
+                    width <= 768
+                    ? 480
+                    : (width / 2 - 100) > 400
+                        ? 400
+                        : (width / 2 - 100)
                 }
-                height={225}
+                height={
+                    width <= 768 
+                    ? 220 : 300
+                }
                 id="can"
+                style={{
+                    height: 
+                        width <= 768
+                        ? japanese ? 220 : 0
+                        : 300,
+                    width: 
+                        width <= 768
+                        ? "calc(100% - 20px)"
+                        : japanese ? 400 : 0,
+                    marginTop: 
+                        width <= 768
+                        ? japanese ? 10 : 0
+                        : 0,
+                    marginRight: 
+                        width <= 768
+                        ? 0
+                        : japanese ? 10 : 0
+                }}
             ></canvas>
 
             <div className="canvas-sidebar">
@@ -284,18 +310,24 @@ const Canvas = ({ setInput }) => {
                 <div className="suggestions">
                     {suggestions.map((text, i) => (
                         <span 
-                            className={`suggestion clear-btn`}
-                            id="clear-btn"
+                            className="suggestion"
                             key={i}
-                            onClick={() => setInput(prev => prev + text)}
+                            onClick={() => {
+                                setInput(prev => prev + text)
+                                can.erase()
+                                setSuggestions([])
+                            }}
                         >
                             {text}
                         </span>
                     ))}
                     <span 
                         className="suggestion" 
-                        id="clear-btn"
-                        onClick={() => setInput("")}
+                        onClick={() => {
+                            setInput("")
+                            can.erase()
+                            setSuggestions([])
+                        }}
                     >Clear</span>
                 </div>
             </div>

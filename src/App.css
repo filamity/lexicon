@@ -38,11 +38,16 @@ body {
     width: 100%;
     display: flex;
     height: 300px;
+    justify-content: flex-end;
+    transition: 0.5s;
 }
 
 @media screen and (max-width: 768px) {
     .content-wrap {
         flex-direction: column;
+    }
+    .outer-wrap {
+        justify-content: center;
     }
 }
 
@@ -58,19 +63,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
     position: relative;
+
+    margin-right: 5px;
+    margin-left: 10px;
 }
 
 .sidebar {
     background-color: #FEFEFE;
-    margin-left: 10px;
     border-radius: 0.5rem;
     height: 300px;
     width: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin-left: 5px;
     margin-right: 10px;
 }
 

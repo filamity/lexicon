@@ -22,7 +22,14 @@ function App() {
     const [added, setAdded] = useState(false)
     const [list, setList] = useState([])
     const [show, setShow] = useState(false)
+    const [width, setWidth] = useState(window.innerWidth)
     const inputField = useRef()
+    
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    })
 
     useEffect(() => {
         window.addEventListener("keydown", function handler(e) {
@@ -84,14 +91,48 @@ function App() {
 
     function download() {
         const element = document.createElement("a")
-        let string = `Word\t\t\tRomaji\t\t\tKana\n----------------------------------------------------\n`
+        let string = `Meaning\t\t\t\tRomaji\t\t\tKana\n------------------------------------------------------------\n`
         for (let i = 0; i < list.length; i++) {
-            if (vocab[list[i]][1].length < 8) {
-                string += `${vocab[list[i]][1]}\t\t\t${vocab[list[i]][2]}\n`
-            } else if (vocab[list[i]][1].length < 16) {
-                string += `${vocab[list[i]][1]}\t\t${vocab[list[i]][2]}\n`
+            if (vocab[list[i]][2].length < 8) {
+                if (vocab[list[i]][1].length < 8) {
+                    string += `${vocab[list[i]][2]}\t\t\t\t${vocab[list[i]][1]}\t\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 16) {
+                    string += `${vocab[list[i]][2]}\t\t\t\t${vocab[list[i]][1]}\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 24) {
+                    string += `${vocab[list[i]][2]}\t\t\t\t${vocab[list[i]][1]}\t${vocab[list[i]][0]}\n`
+                } else {
+                    string += `${vocab[list[i]][2]}\t\t\t\t${vocab[list[i]][1]}${vocab[list[i]][0]}\n`
+                }
+            } else if (vocab[list[i]][2].length < 16) {
+                if (vocab[list[i]][1].length < 8) {
+                    string += `${vocab[list[i]][2]}\t\t\t${vocab[list[i]][1]}\t\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 16) {
+                    string += `${vocab[list[i]][2]}\t\t\t${vocab[list[i]][1]}\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 24) {
+                    string += `${vocab[list[i]][2]}\t\t\t${vocab[list[i]][1]}\t${vocab[list[i]][0]}\n`
+                } else {
+                    string += `${vocab[list[i]][2]}\t\t\t${vocab[list[i]][1]}${vocab[list[i]][0]}\n`
+                }
+            } else if (vocab[list[i]][2].length < 24) {
+                if (vocab[list[i]][1].length < 8) {
+                    string += `${vocab[list[i]][2]}\t\t${vocab[list[i]][1]}\t\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 16) {
+                    string += `${vocab[list[i]][2]}\t\t${vocab[list[i]][1]}\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 24) {
+                    string += `${vocab[list[i]][2]}\t\t${vocab[list[i]][1]}\t${vocab[list[i]][0]}\n`
+                } else {
+                    string += `${vocab[list[i]][2]}\t\t${vocab[list[i]][1]}${vocab[list[i]][0]}\n`
+                }
             } else {
-                string += `${vocab[list[i]][1]}\t${vocab[list[i]][2]}\n`
+                if (vocab[list[i]][1].length < 8) {
+                    string += `${vocab[list[i]][2]}\t${vocab[list[i]][1]}\t\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 16) {
+                    string += `${vocab[list[i]][2]}\t${vocab[list[i]][1]}\t\t${vocab[list[i]][0]}\n`
+                } else if (vocab[list[i]][1].length < 24) {
+                    string += `${vocab[list[i]][2]}\t${vocab[list[i]][1]}\t${vocab[list[i]][0]}\n`
+                } else {
+                    string += `${vocab[list[i]][2]}\t${vocab[list[i]][1]}${vocab[list[i]][0]}\n`
+                }
             }
         }
         const blob = new Blob([string], {type: "text/plain; charset=utf-8"})
@@ -103,10 +144,14 @@ function App() {
 
     useEffect(() => {
         if (!gameOver) {
-            if (input === vocab[qOrder[currentIdx]][1]) {
+            if (japanese 
+                ? input === vocab[qOrder[currentIdx]][0]
+                : input === vocab[qOrder[currentIdx]][1]
+                ) {
                 setCurrentIdx(prev => prev + 1)
                 setInput("")
                 if (currentIdx >= vocab.length - 1) {
+                    setJapanese(false)
                     setGameOver(true)
                 }
             }
@@ -116,7 +161,7 @@ function App() {
                 setAdded(false)
             }
         }
-    }, [input, qOrder, currentIdx, list, gameOver])
+    }, [input, qOrder, currentIdx, list, gameOver, japanese])
 
     useEffect(() => {
         setShow(false)
@@ -130,11 +175,12 @@ function App() {
             <div className="content-wrap">
                 
                 <div 
-                    className="outer-wrap" 
+                    className="outer-wrap"
                     style={{
-                        justifyContent: (window.innerWidth <= 768)
-                            ? "center"
-                            : japanese ? "flex-end" : "center"
+                        marginLeft: 
+                        width <= 768
+                        ? 0
+                        : japanese ? 0 : 380
                     }}
                 >
                     <div className="question-card">
@@ -146,7 +192,9 @@ function App() {
                                     <div className="display-text">
                                         {
                                             show 
-                                            ? vocab[qOrder[currentIdx]][1]
+                                            ? japanese 
+                                                ? vocab[qOrder[currentIdx]][0] 
+                                                : vocab[qOrder[currentIdx]][1]
                                             : vocab[qOrder[currentIdx]][2]
                                         }
                                     </div>
@@ -255,7 +303,7 @@ function App() {
                     </div>
                 </div>
 
-                {japanese && <Canvas setInput={setInput} />}
+                <Canvas setInput={setInput} japanese={japanese} />
 
             </div>
         </div>
