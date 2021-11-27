@@ -31,24 +31,14 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    flex-direction: row;
 }
 
 .outer-wrap {
-    width: 100%;
     display: flex;
+    width: 100%;
+    justify-content: center;
     height: 300px;
-    justify-content: flex-end;
     transition: 0.5s;
-}
-
-@media screen and (max-width: 768px) {
-    .content-wrap {
-        flex-direction: column;
-    }
-    .outer-wrap {
-        justify-content: center;
-    }
 }
 
 #vocab-range {
