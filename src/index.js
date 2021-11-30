@@ -4,6 +4,7 @@ import App from './App'
 import Inter from "./assets/fonts/Inter-Regular.ttf"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
+import AuthProvider from './AuthContext'
 
 const theme = createTheme({
   typography: {
@@ -26,11 +27,11 @@ const theme = createTheme({
 })
 
 ReactDOM.render(
-  <React.StrictMode>
+  <AuthProvider>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <App />
     </ThemeProvider>
-  </React.StrictMode>,
+  </AuthProvider>,
   document.getElementById('root')
 )

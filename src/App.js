@@ -1,46 +1,54 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import DownloadIcon from "@mui/icons-material/Download";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import TranslateIcon from "@mui/icons-material/Translate";
-import IconButton from "@mui/material/IconButton";
 import { vocab } from "./vocab";
+import QuestionCard from "./QuestionCard";
+import Sidebar from "./Sidebar";
+import { useAuth } from "./AuthContext";
+import Login from "./Login";
+import handleUserData from "./handleUserData";
 
-function App() {
+const App = () => {
+  const { currentUser, logout } = useAuth();
   const [input, setInput] = useState("");
   const [japanese, setJapanese] = useState(false);
-  const [qOrder, setQOrder] = useState(
-    shuffle([...Array(vocab.length).keys()])
-  );
-  const [currentIdx, setCurrentIdx] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [added, setAdded] = useState(false);
-  const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
+  const [qOrder, setQOrder] = useState(null);
+  const [currentIdx, setCurrentIdx] = useState(null);
+  const [list, setList] = useState(null);
   const inputField = useRef();
+  const initialVals = {
+    qOrder: shuffle([...Array(vocab.length).keys()]),
+    currentIdx: 0,
+    list: [],
+  };
 
   useEffect(() => {
-    window.addEventListener("keydown", function handler(e) {
-      if (inputField.current !== null) {
-        if (/[a-zA-Z. ]/.test(e.key)) {
-          inputField.current.focus();
-        }
-        switch (e.code) {
-          case "Escape":
-            inputField.current.blur();
-            break;
-          default:
-            break;
-        }
-      }
-    });
-  }, []);
+    if (currentUser) {
+      handleUserData("get", currentUser.uid).then((res) => {
+        let data = res.data();
+        setQOrder(data.qOrder);
+        setCurrentIdx(data.currentIdx);
+        setList(data.list);
+      });
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (
+      currentUser &&
+      qOrder !== null &&
+      currentIdx !== null &&
+      list !== null
+    ) {
+      handleUserData("update", currentUser.uid, {
+        qOrder,
+        currentIdx,
+        list,
+      });
+    }
+  }, [currentUser, qOrder, currentIdx, list]);
 
   function shuffle(array) {
     var m = array.length,
@@ -168,7 +176,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (!gameOver) {
+    if (!gameOver && qOrder !== null && currentIdx !== null && list !== null) {
       if (
         japanese
           ? input === vocab[qOrder[currentIdx]][0]
@@ -197,113 +205,51 @@ function App() {
     <div>
       <h3 className="top-header">Japanese Vocabulary Learning</h3>
       <div className="content-wrap">
-        <div className="outer-wrap">
-          <div className="question-card">
-            {!gameOver && (
-              <>
-                <div className="current-count">
-                  {currentIdx + 1} / {vocab.length}
-                </div>
-                <div>
-                  <div className="display-text">
-                    {show
-                      ? japanese
-                        ? vocab[qOrder[currentIdx]][0]
-                        : vocab[qOrder[currentIdx]][1]
-                      : vocab[qOrder[currentIdx]][2]}
-                  </div>
-                  <TextField
-                    label={`Answer in Japanese ${
-                      japanese ? "(Kana)" : "(Romaji)"
-                    }`}
-                    variant="standard"
-                    value={input}
-                    onChange={(e) =>
-                      setInput(e.target.value.toLowerCase().replace(/\s/g, ""))
-                    }
-                    inputRef={inputField}
-                    autoFocus
-                    inputProps={{ maxLength: 50 }}
-                  />
-                </div>
-              </>
-            )}
-            {gameOver && (
-              <div>
-                <div className="display-text">終わりました！</div>
-                <Button variant="contained" onClick={reset}>
-                  Try Again
-                </Button>
-              </div>
-            )}
+        {currentUser &&
+        qOrder !== null &&
+        currentIdx !== null &&
+        list !== null ? (
+          <div className="outer-wrap">
+            <QuestionCard
+              gameOver={gameOver}
+              currentIdx={currentIdx}
+              vocab={vocab}
+              show={show}
+              japanese={japanese}
+              qOrder={qOrder}
+              setInput={setInput}
+              input={input}
+              inputField={inputField}
+              reset={reset}
+            />
+            <Sidebar
+              gameOver={gameOver}
+              japanese={japanese}
+              setJapanese={setJapanese}
+              added={added}
+              show={show}
+              hide={hide}
+              reveal={reveal}
+              removeFromList={removeFromList}
+              addToList={addToList}
+              download={download}
+              logout={logout}
+            />
           </div>
-          <div className="sidebar">
-            <div>
-              {!gameOver && japanese && (
-                <Tooltip title="Answer in Romaji" placement="right">
-                  <IconButton
-                    color="primary"
-                    size="large"
-                    onClick={() => setJapanese((prev) => !prev)}
-                  >
-                    <TranslateIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!gameOver && !japanese && (
-                <Tooltip title="Answer in Kana" placement="right">
-                  <IconButton
-                    color="primary"
-                    size="large"
-                    onClick={() => setJapanese((prev) => !prev)}
-                  >
-                    <TranslateIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!gameOver && show && (
-                <Tooltip title="Hide Answer" placement="right">
-                  <IconButton color="primary" size="large" onClick={hide}>
-                    <VisibilityOffIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!gameOver && !show && (
-                <Tooltip title="Show Answer" placement="right">
-                  <IconButton color="primary" size="large" onClick={reveal}>
-                    <VisibilityIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!gameOver && added && (
-                <Tooltip title="Remove from List" placement="right">
-                  <IconButton
-                    color="primary"
-                    size="large"
-                    onClick={removeFromList}
-                  >
-                    <AddCircleIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!gameOver && !added && (
-                <Tooltip title="Add to List" placement="right">
-                  <IconButton color="primary" size="large" onClick={addToList}>
-                    <AddCircleOutlineIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              <Tooltip title="Download List" placement="right">
-                <IconButton color="primary" size="large" onClick={download}>
-                  <DownloadIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-            </div>
-          </div>
-        </div>
+        ) : (
+          <Login
+            qOrder={qOrder}
+            currentIdx={currentIdx}
+            list={list}
+            setQOrder={setQOrder}
+            setCurrentIdx={setCurrentIdx}
+            setList={setList}
+            initialVals={initialVals}
+          />
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default App;

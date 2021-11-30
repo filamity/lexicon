@@ -1,85 +1,107 @@
 @font-face {
-    font-family: "Inter";
-    src: url("./assets/fonts/Inter-Regular.ttf") format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Regular.ttf") format("truetype");
 }
 @font-face {
-    font-family: "Inter";
-    src: url("./assets/fonts/Inter-ExtraBold.ttf") format('truetype');
-    font-weight: bold;
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-ExtraBold.ttf") format("truetype");
+  font-weight: bold;
 }
 
 * {
-    font-family: "Inter";
+  font-family: "Inter";
 }
 
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .top-header {
-    position: absolute;
-    width: 100%;
-    text-align: center;
+  position: absolute;
+  width: 100%;
+  text-align: center;
 }
 
 .content-wrap {
-    height: 100vh;
-    width: 100%;
-    background-color: #ECECEC;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #ececec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .outer-wrap {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    height: 300px;
-    transition: 0.5s;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 300px;
+  transition: 0.5s;
 }
 
 #vocab-range {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .question-card {
-    width: 100%;
-    max-width: 400px;
-    border-radius: 0.5rem;
-    background-color: #FEFEFE;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 0.5rem;
+  background-color: #fefefe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 
-    margin-right: 5px;
-    margin-left: 10px;
+  margin-right: 5px;
+  margin-left: 10px;
 }
 
 .sidebar {
-    background-color: #FEFEFE;
-    border-radius: 0.5rem;
-    height: 300px;
-    width: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: #fefefe;
+  border-radius: 0.5rem;
+  height: 300px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    margin-left: 5px;
-    margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 10px;
 }
 
 .current-count {
-    position: absolute;
-    right: 15px;
-    top: 10px;
+  position: absolute;
+  right: 15px;
+  top: 10px;
 }
 
 .display-text {
-    font-weight: bolder;
-    font-size: 30px;
-    padding: 0 0 20px;
+  font-weight: bolder;
+  font-size: 30px;
+  padding: 0 0 20px;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+}
+
+.buffer-20 {
+  height: 20px;
+}
+
+.error {
+  color: red;
+  font-size: 15px;
+  line-height: 1.2;
+  max-width: 250px;
+}
+
+.login-change {
+  cursor: pointer;
+  font-size: 15px;
+  text-decoration: underline;
 }
