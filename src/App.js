@@ -200,6 +200,8 @@ const App = () => {
   useEffect(() => {
     setShow(false);
   }, [currentIdx]);
+  
+  console.log(currentUser, qOrder, currentIdx, list);
 
   return (
     <div>
