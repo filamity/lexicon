@@ -25,6 +25,13 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (currentIdx >= vocab.length - 1) {
+      setJapanese(false);
+      setGameOver(true);
+    }
+  }, [currentIdx]);
+
+  useEffect(() => {
     if (currentUser) {
       handleUserData("get", currentUser.uid).then((res) => {
         let data = res.data();
@@ -201,8 +208,6 @@ const App = () => {
     setShow(false);
   }, [currentIdx]);
   
-  console.log(currentUser, qOrder, currentIdx, list);
-
   return (
     <div>
       <h3 className="top-header">Japanese Vocabulary Learning</h3>
